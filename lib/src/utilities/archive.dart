@@ -5,7 +5,8 @@ Archive _cloneArchive(
   Map<String, ArchiveFile> _archiveFiles, {
   String? excludedFile,
 }) {
-  var clone = Archive();
+  final clone = Archive();
+
   archive.files.forEach((file) {
     if (file.isFile) {
       if (excludedFile != null &&
@@ -16,10 +17,11 @@ Archive _cloneArchive(
       if (_archiveFiles.containsKey(file.name)) {
         copy = _archiveFiles[file.name]!;
       } else {
-        var content = file.content as Uint8List;
-        var compress = !_noCompression.contains(file.name);
-        copy = ArchiveFile(file.name, content.length, content)
-          ..compress = compress;
+        final content = file.content;
+        final noCompress = _noCompression.contains(file.name);
+        copy = ArchiveFile(file.name, content.length, content);
+
+        if (noCompress) copy.compression = CompressionType.none;
       }
       clone.addFile(copy);
     }
